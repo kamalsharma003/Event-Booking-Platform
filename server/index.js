@@ -10,6 +10,8 @@ dotenv.config();
 const app = express();
 
 app.use('/api/auth', authRoute)
+app.use('/api/event', eventRoute)
+app.use('/api/booking', bookingRoute)
 
 mongoose.connect(process.env.MONGODB_URL)
 .then( ()=>{
