@@ -109,34 +109,54 @@ const Event = require('../models/eventModel')
 const getAllEvent = async (req, res) => {
     try {
         const filters = {}
+
         if (req.query.category) {
             filters.category = req.query.category
         }
+
         if (req.query.ticketPrice) {
             filters.ticketPrice = req.query.ticketPrice
         }
 
         const events = await Event.find(filters)
+
         res.json(events)
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+            error: error.message
+        })
     }
 }
 
 const getEventById = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id)
+
         if (!event) {
-            return res.status(404).json({ message: 'event not found' })
+            return res.status(404).json({
+                message: 'Event not found'
+            })
         }
+
         res.json(event)
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+            error: error.message
+        })
     }
 }
 
 const createEvent = async (req, res) => {
-    const { title, description, date, location, category, totalSeats, ticketPrice, imageUrl } = req.body
+    const {
+        title,
+        description,
+        date,
+        location,
+        category,
+        totalSeats,
+        ticketPrice,
+        imageUrl
+    } = req.body
 
     try {
         const event = await Event.create({
@@ -149,40 +169,84 @@ const createEvent = async (req, res) => {
             ticketPrice,
             imageUrl
         })
+
         res.status(201).json(event)
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+            error: error.message
+        })
     }
 }
 
-const updateById = async (req, res) => {
-    const { title, description, date, location, category, totalSeats, ticketPrice, imageUrl } = req.body
+const updateEvent = async (req, res) => {
+    const {
+        title,
+        description,
+        date,
+        location,
+        category,
+        totalSeats,
+        ticketPrice,
+        imageUrl
+    } = req.body
 
     try {
         const event = await Event.findByIdAndUpdate(
             req.params.id,
-            { title, description, date, location, category, totalSeats, ticketPrice, imageUrl },
-            { new: true, runValidators: true }
+            {
+                title,
+                description,
+                date,
+                location,
+                category,
+                totalSeats,
+                ticketPrice,
+                imageUrl
+            },
+            {
+                new: true,
+                runValidators: true
+            }
         )
+
         if (!event) {
-            return res.status(404).json({ message: 'event not found' })
+            return res.status(404).json({
+                message: 'Event not found'
+            })
         }
+
         res.json(event)
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+            error: error.message
+        })
     }
 }
 
 const deleteEvent = async (req, res) => {
     try {
         const event = await Event.findByIdAndDelete(req.params.id)
+
         if (!event) {
-            return res.status(404).json({ message: 'event not found' })
+            return res.status(404).json({
+                message: 'Event not found'
+            })
         }
-        res.json({ message: 'event deleted successfully' })
+
+        res.json({
+            message: 'Event deleted successfully'
+        })
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+            error: error.message
+        })
     }
 }
 
-module.exports = { getAllEvent, getEventById, createEvent, updateById, deleteEvent }
+module.exports = {
+    getAllEvent,
+    getEventById,
+    createEvent,
+    updateEvent,
+    deleteEvent
+}
