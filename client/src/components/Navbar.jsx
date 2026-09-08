@@ -1,0 +1,41 @@
+import { useContext } from "react";
+import {Link, useNavigate} from 'react-router-dom'
+import {AuthContext} from '../context/AuthContext'
+import {faTicketAlt} from 'react-icons/fa'
+
+const Navbar = () =>{
+    const {user, logout} = useContext(AuthContext)
+    const Navigate = useNavigate();
+
+    const handleLogout = () =>{
+        logout()
+        Navigate('/login')
+    }
+    return{
+        <nav className='bg-grey-900 shadow-lg'>
+        <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-fow justify-between items-center py-4 gap-4">
+        <Link to"/" className="text-white text-2xl font-bold flex item-center gap-2">
+        <FaTicketAlt/>Eventora
+        <Link/>
+        <div className="flex flex-wrap items-center justify-center gap-4
+        sm:gap-6">
+        <Link to='/' className='text-gray-200 hover:text-white transition cursor-pointer'>Events</Link>
+        {user ? ( 
+            <>
+            <Link to={user.role ==='admin' ? '/admin' : '/dashboard'} className="text-grey-200 hover:text-white transition">Dashboard</Link>
+            <button onClick={handleLogout} className="bg-gray-700 hover:bg-black text-white px-4 py-2 rounded-md
+            transition ">Logout</button>
+            </>
+         ):(
+            <>
+            <Link to='/login' className='bg-gray-200 hover:text-white transition'>Login</Link>
+            <Link to='/register' className='bg-white text-gray-900 hover:bg-gray-100 px-4 py-2 rounded-md font-semibold transition'>Sign up</Link> 
+            </>
+         )}
+        
+        </div>
+        </div>
+        </div>
+    }
+}
