@@ -1,0 +1,2 @@
+﻿const UserDashboard = () => <main className="min-h-[calc(100vh-88px)] bg-gray-950 px-4 py-12"><section className="mx-auto max-w-5xl rounded-2xl bg-white p-8 shadow-2xl"><p className="text-sm font-bold tracking-[.2em] text-gray-500">EVENTORA</p><h1 className="mt-2 text-3xl font-extrabold text-gray-950">Your dashboard</h1><p className="mt-3 text-gray-600">Your bookings and upcoming events will appear here.</p></section></main>;
+export default UserDashboard;
