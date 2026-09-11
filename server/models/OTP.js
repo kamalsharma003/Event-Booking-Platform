@@ -1,9 +1,8 @@
-
-const mongoose = require('mongoose')
+﻿const mongoose = require('mongoose')
 
 const otpSchema = new mongoose.Schema({
     email: {
-        type: String, 
+        type: String,
         required: true
     },
     otp: {
@@ -12,7 +11,7 @@ const otpSchema = new mongoose.Schema({
     },
     action: {
         type: String,
-        enum: ['account_verification', 'event_booking'],
+        enum: ['account_verification', 'login', 'event_booking'],
         required: true
     },
     createdAt: {

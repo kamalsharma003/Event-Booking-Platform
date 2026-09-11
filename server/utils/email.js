@@ -1,10 +1,5 @@
+﻿const nodemailer = require('nodemailer')
 
-const nodemailer = require('nodemailer')
-const dotenv = require('dotenv')
-
-dotenv.config()
-
-// Create transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -13,56 +8,22 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-// Send OTP email
-const sendOtpEmail = async (otp, email, type) => {
-    try {
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Your OTP Code',
-            text: `Your OTP code is: ${otp}`
-        }
-
-        await transporter.sendMail(mailOptions)
-
-        console.log(`OTP email sent to ${email} for ${type}`)
-    } catch (error) {
-        console.log(
-            `Error sending OTP email to ${email} for ${type}:`,
-            error
-        )
-    }
+const sendOtpEmail = async (email, otp) => {
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Your Eventora OTP Code',
+        text: `Your Eventora OTP code is: ${otp}`
+    })
 }
 
-// Send booking confirmation email
 const sendBookingEmail = async (email, booking) => {
-    try {
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Booking Confirmation',
-            text: `
-Your booking has been confirmed!
-
-Booking ID: ${booking.id}
-Date: ${booking.date}
-Time: ${booking.time}
-Service: ${booking.service}
-
-Thank you for booking with us.
-            `
-        }
-
-        await transporter.sendMail(mailOptions)
-
-        console.log(`Booking email sent to ${email}`)
-    } catch (error) {
-        console.log(`Error sending booking email to ${email}:`, error)
-    }
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Eventora booking confirmed',
+        text: `Your booking for ${booking.eventId.title} has been confirmed.\n\nBooking ID: ${booking._id}\nEvent date: ${new Date(booking.eventId.date).toLocaleString()}\nLocation: ${booking.eventId.location}\nAmount: ${booking.amount}`
+    })
 }
 
-// Export both functions
-module.exports = {
-    sendOtpEmail,
-    sendBookingEmail
-}
+module.exports = { sendOtpEmail, sendBookingEmail }
