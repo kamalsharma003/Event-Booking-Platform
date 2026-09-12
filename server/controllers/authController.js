@@ -1,10 +1,18 @@
-﻿const User = require('../models/authModel')
+const User = require('../models/authModel')
 const OTP = require('../models/OTP')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { sendOtpEmail } = require('../utils/email')
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString()
+
+const sendAccountVerificationOtp = async (email) => {
+    const otp = generateOtp()
+
+    await OTP.deleteMany({ email, action: 'account_verification' })
+    await OTP.create({ email, otp, action: 'account_verification' })
+    await sendOtpEmail(email, otp)
+}
 
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body
@@ -17,7 +25,12 @@ const registerUser = async (req, res) => {
     try {
         const userExists = await User.findOne({ email: normalizedEmail })
         if (userExists) {
-            return res.status(400).json({ message: 'User already exists' })
+            if (userExists.isVerified) {
+                return res.status(409).json({ message: 'User already exists' })
+            }
+
+            await sendAccountVerificationOtp(normalizedEmail)
+            return res.status(200).json({ message: 'OTP resent to your email', email: userExists.email })
         }
 
         const passwordHash = await bcrypt.hash(password, 10)
@@ -27,15 +40,12 @@ const registerUser = async (req, res) => {
             password: passwordHash,
             role: 'user'
         })
-        const otp = generateOtp()
-
-        await OTP.deleteMany({ email: normalizedEmail, action: 'account_verification' })
-        await OTP.create({ email: normalizedEmail, otp, action: 'account_verification' })
-        await sendOtpEmail(normalizedEmail, otp)
+        await sendAccountVerificationOtp(normalizedEmail)
 
         res.status(201).json({ message: 'OTP sent to your email', email: user.email })
     } catch (error) {
-        res.status(400).json({ message: 'User registration failed' })
+        console.error('User registration failed:', error.message)
+        res.status(500).json({ message: 'User registration failed. Please try again.' })
     }
 }
 

@@ -1,11 +1,13 @@
-﻿const express = require('express')
+const express = require('express')
 const dotenv = require('dotenv')
+const path = require('path')
+dotenv.config({ path: path.join(__dirname, '.env'), override: true })
+
 const mongoose = require('mongoose')
 const authRoute = require('./routes/authRoute')
 const bookingRoute = require('./routes/booking')
 const eventRoute = require('./routes/event')
-
-dotenv.config()
+const cors = require('cors')
 
 const app = express()
 app.use(express.json())
